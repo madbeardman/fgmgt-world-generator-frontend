@@ -10,7 +10,7 @@ import archiver from 'archiver';
  * @param {string} outputFilePath - Full path to the output .mod file
  * @param {(msg: string) => void} onMessage - Optional logger callback
  */
-export async function createZipArchive(outputDir, sectorName, outputFilePath, onMessage = () => { }) {
+export async function createZipArchive(outputDir, outputFilePath, onMessage = () => { }) {
     return new Promise((resolve, reject) => {
         const output = fs.createWriteStream(outputFilePath);
         const archive = archiver('zip', { zlib: { level: 9 } });
@@ -28,7 +28,7 @@ export async function createZipArchive(outputDir, sectorName, outputFilePath, on
 
         // Add expected files for Fantasy Grounds module
         archive.file(path.join(outputDir, 'definition.xml'), { name: 'definition.xml' });
-        archive.file(path.join(outputDir, `${sectorName} Worlds.xml`), { name: `${sectorName} Worlds.xml` });
+        archive.file(path.join(outputDir, 'db.xml'), { name: 'db.xml' });
 
         archive.finalize();
     });
