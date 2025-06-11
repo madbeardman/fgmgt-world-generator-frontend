@@ -1,3 +1,7 @@
+![Traveller Logo](./traveller_logo.png)
+
+---
+
 # 🌌 Traveller Sector to Fantasy Grounds Module Generator
 
 A web-based tool to fetch data from [TravellerMap](https://travellermap.com/), format it, and output a `.mod` file compatible with Fantasy Grounds. Built using Astro, Vite, and Node.js tooling.
@@ -6,7 +10,9 @@ A web-based tool to fetch data from [TravellerMap](https://travellermap.com/), f
 
 ## 🚀 Features
 
-- Fetches sector data from the TravellerMap API
+- Dynamically fetches sector names from the [TravellerMap API](https://travellermap.com/api/universe)
+- Caches sector list in localStorage for 30 days (for fast access)
+- Manual refresh (♻️) button to re-fetch sector list
 - Supports multiple output formats:
   - **Module** (`.mod` ZIP file for Fantasy Grounds)
   - **System** (plain `.txt` file)
@@ -55,17 +61,18 @@ The app will be available at [http://localhost:4321](http://localhost:4321)
 ## 🧭 Usage
 
 1. Open the web interface in your browser.
-2. Enter the name of the sector (e.g. `Spinward Marches`).
-3. Choose your desired output format:
+2. Select a sector name from the dropdown (fetched from the TravellerMap API).
+3. If needed, click the ♻️ button next to the dropdown to re-fetch the latest list.
+4. Choose your desired output format:
    - `module` for `.mod` file
    - `system` for plain `.txt` export
-4. Click **Generate**.
-5. The tool will:
+5. Click **Generate**.
+6. The tool will:
    - Fetch all 16 subsectors
    - Parse and format the systems
    - Output your file in the `output/` folder
 
-You’ll see build progress in real time, including messages like:
+Progress messages appear in real-time:
 
 ```
 📦 Fetching subsector: Regina (A)
@@ -80,30 +87,35 @@ You’ll see build progress in real time, including messages like:
 
 All files are saved to the local `output/` folder:
 
-- `Spinward Marches Worlds.xml` — primary data file
+- `db.xml` — raw XML used inside `.mod` files
 - `definition.xml` — module metadata
-- `Spinward Marches Worlds Module.mod` — zipped `.mod` archive for use in Fantasy Grounds
+- `Spinward Marches Worlds Module.mod` — zipped `.mod` archive
+- `Spinward Marches systems.txt` — plain system list (only for `system` format)
 
 ---
 
 ## 🛠️ Development Notes
 
-- This project uses dynamic API calls to `https://travellermap.com/data/{sector}/{subsector}/sec`
-- Uses `archiver` to create `.mod` files — install it with:
+- Uses `fetch` to pull data from: `https://travellermap.com/data/{sector}/{subsector}/sec`
+- Sector list pulled from: [`/api/universe?milieu=M1105&tag=Official&requireData=1`](https://travellermap.com/api/universe?milieu=M1105&tag=Official&requireData=1)
+- Sector names are cached in `localStorage` for 30 days
+- You can force-refresh sector list by clicking the ♻️ icon
+- Uses `archiver` to build `.mod` files
+
+To install `archiver` if needed:
 
 ```bash
 pnpm add archiver
 ```
 
-- The web frontend calls an internal API at `/api/generate-stream` which invokes the `buildSector()` function in Node.
-
 ---
 
 ## 🧙 Fantasy Grounds Instructions
 
-1. Copy the generated `.mod` file into your Fantasy Grounds `modules/` folder.
-2. Launch Fantasy Grounds and load the module in your campaign.
-3. Your sector should now be available for use!
+1. Copy the `.mod` file to your Fantasy Grounds `modules/` directory.
+2. Launch Fantasy Grounds and open your campaign.
+3. Enable the module via the Library → Modules window.
+4. Navigate to the Worlds category to browse the data.
 
 ---
 
@@ -116,5 +128,5 @@ MIT License © Colin 'MadBeardMan' Richardson
 ## 🌍 Acknowledgements
 
 - [TravellerMap API](https://travellermap.com/api)
-- Mongoose Publishing — _Traveller 2e_
-- SmiteWorks — _Fantasy Grounds_
+- [Mongoose Publishing — _Traveller 2e_](https://www.mongoosepublishing.com/collections/traveller-rpgs))
+- [SmiteWorks — _Fantasy Grounds_](https://www.fantasygrounds.com/store/?sys=30&sort=1#TopSellers)
