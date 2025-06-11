@@ -1,26 +1,82 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { RefreshCcw } from "lucide-react";
 
-const sectors = ["Spinward Marches", "Deneb", "Solomani", "Vland", "Foreven"];
 const formats = ["module", "system"];
+const CACHE_KEY = "cachedSectors";
+const CACHE_EXPIRY_KEY = "cachedSectorsExpiry";
+const CACHE_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 30; // 30 days
 
 export default function SectorForm() {
-  const [sector, setSector] = useState(sectors[0]);
+  const [sectors, setSectors] = useState([]);
+  const [sector, setSector] = useState("");
   const [format, setFormat] = useState(formats[0]);
   const [status, setStatus] = useState("idle");
   const [messages, setMessages] = useState([]);
   const eventSourceRef = useRef(null);
+
+  useEffect(() => {
+    loadSectors();
+  }, []);
+
+  function loadSectors(forceRefresh = false) {
+    const cached = localStorage.getItem(CACHE_KEY);
+    const expiry = localStorage.getItem(CACHE_EXPIRY_KEY);
+
+    const isExpired = expiry && Date.now() > Number(expiry);
+
+    if (!forceRefresh && cached && !isExpired) {
+      try {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setSectors(parsed);
+          setSector(parsed[0]);
+          return;
+        }
+      } catch {
+        console.warn("❌ Invalid cached data, ignoring.");
+      }
+    }
+
+    fetchSectors(); // fallback or refresh
+  }
+
+  async function fetchSectors() {
+    try {
+      const res = await fetch(
+        "https://travellermap.com/api/universe?milieu=M1105&tag=Official&requireData=1"
+      );
+      const data = await res.json();
+
+      if (!Array.isArray(data.Sectors)) {
+        throw new Error("Expected a 'Sectors' array in API response");
+      }
+
+      const sortedNames = data.Sectors.map((s) => s.Names[0].Text).sort();
+      setSectors(sortedNames);
+      setSector(sortedNames[0]);
+
+      localStorage.setItem(CACHE_KEY, JSON.stringify(sortedNames));
+      localStorage.setItem(
+        CACHE_EXPIRY_KEY,
+        (Date.now() + CACHE_MAX_AGE_MS).toString()
+      );
+    } catch (err) {
+      console.error("❌ Failed to fetch sector list", err);
+      const fallback = ["Spinward Marches"];
+      setSectors(fallback);
+      setSector(fallback[0]);
+    }
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
     setMessages([]);
     setStatus("loading");
 
-    // Close any previous stream
     if (eventSourceRef.current) {
       eventSourceRef.current.close();
     }
 
-    // Start SSE
     const es = new EventSource(
       `${
         window.location.origin
@@ -44,7 +100,7 @@ export default function SectorForm() {
       }
     };
 
-    es.onerror = (err) => {
+    es.onerror = () => {
       setStatus("error");
       setMessages((prev) => [...prev, "❌ Connection error."]);
       es.close();
@@ -55,15 +111,25 @@ export default function SectorForm() {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <label className="block text-sm font-medium mb-1">Sector</label>
-        <select
-          value={sector}
-          onChange={(e) => setSector(e.target.value)}
-          className="bg-gray-800 border border-gray-700 p-2 rounded w-full"
-        >
-          {sectors.map((s) => (
-            <option key={s}>{s}</option>
-          ))}
-        </select>
+        <div className="flex items-center gap-2">
+          <select
+            value={sector}
+            onChange={(e) => setSector(e.target.value)}
+            className="bg-gray-800 border border-gray-700 p-2 rounded w-full"
+          >
+            {sectors.map((s) => (
+              <option key={s}>{s}</option>
+            ))}
+          </select>
+          <button
+            type="button"
+            onClick={() => loadSectors(true)}
+            title="Refresh Sector List"
+            className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-3 rounded flex items-center justify-center"
+          >
+            <RefreshCcw size={18} className="text-white" />
+          </button>
+        </div>
       </div>
 
       <div>

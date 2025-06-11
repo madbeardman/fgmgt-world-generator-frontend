@@ -39,7 +39,6 @@ function mapBases(bases, commentField) {
  */
 export function readLine(sector, subsector, line, subsectorIndex) {
 
-    // console.log(`${line}`);
 
     if (!line || line.length < 73) return null;
 

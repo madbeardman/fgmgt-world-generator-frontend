@@ -15,8 +15,6 @@ export async function createZipArchive(outputDir, outputFilePath, onMessage = ()
         const output = fs.createWriteStream(outputFilePath);
         const archive = archiver('zip', { zlib: { level: 9 } });
 
-        console.log(`Creating ZIP archive at: ${outputFilePath}`);
-
         output.on('close', () => {
             onMessage(`📦 Created ZIP archive: ${outputFilePath} (${archive.pointer()} bytes)`);
             resolve();
