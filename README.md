@@ -1,48 +1,122 @@
-# Astro Starter Kit: Basics
+# 🌌 Traveller Sector to Fantasy Grounds Module Generator
 
-```sh
-npm create astro@latest -- --template basics
+A web-based tool to fetch data from [TravellerMap](https://travellermap.com/), format it, and output a `.mod` file compatible with Fantasy Grounds. Built using Astro, Vite, and Node.js tooling.
+
+---
+
+## 🚀 Features
+
+- Fetches sector data from the TravellerMap API
+- Supports multiple output formats:
+  - **Module** (`.mod` ZIP file for Fantasy Grounds)
+  - **System** (plain `.txt` file)
+  - **Refmanual** (Fantasy Grounds Reference Manual XML)
+- CLI-style progress messages in the browser
+- Clean, modern frontend powered by Astro + Vite
+
+---
+
+## 📦 Installation
+
+### Prerequisites
+
+- Node.js (v18 or newer recommended)
+- `pnpm`, `npm`, or `yarn`
+- Internet connection (for accessing TravellerMap data)
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/your-username/fg-traveller-sector-generator.git
+cd fg-traveller-sector-generator
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+### 2. Install dependencies
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
+```bash
+pnpm install
+# or
+npm install
+# or
+yarn install
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+### 3. Start the development server
 
-## 🧞 Commands
+```bash
+pnpm dev
+# or
+npm run dev
+```
 
-All commands are run from the root of the project, from a terminal:
+The app will be available at [http://localhost:4321](http://localhost:4321)
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+---
 
-## 👀 Want to learn more?
+## 🧭 Usage
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+1. Open the web interface in your browser.
+2. Enter the name of the sector (e.g. `Spinward Marches`).
+3. Choose your desired output format:
+   - `module` for `.mod` file
+   - `system` for plain `.txt` export
+   - `refmanual` for Fantasy Grounds Reference Manual XML
+4. Click **Generate**.
+5. The tool will:
+   - Fetch all 16 subsectors
+   - Parse and format the systems
+   - Output your file in the `output/` folder
+
+You’ll see build progress in real time, including messages like:
+
+```
+📦 Fetching subsector: Regina (A)
+📄 43 systems in Regina
+🧰 Formatting 439 total systems
+✅ Build complete: Spinward Marches (module)
+```
+
+---
+
+## 📁 Output
+
+All files are saved to the local `output/` folder:
+
+- `Spinward Marches Worlds.xml` — primary data file
+- `definition.xml` — module metadata
+- `Spinward Marches Worlds Module.mod` — zipped `.mod` archive for use in Fantasy Grounds
+
+---
+
+## 🛠️ Development Notes
+
+- This project uses dynamic API calls to `https://travellermap.com/data/{sector}/{subsector}/sec`
+- Uses `archiver` to create `.mod` files — install it with:
+
+```bash
+pnpm add archiver
+```
+
+- The web frontend calls an internal API at `/api/generate-stream` which invokes the `buildSector()` function in Node.
+
+---
+
+## 🧙 Fantasy Grounds Instructions
+
+1. Copy the generated `.mod` file into your Fantasy Grounds `modules/` folder.
+2. Launch Fantasy Grounds and load the module in your campaign.
+3. Your sector should now be available for use!
+
+---
+
+## 📜 License
+
+MIT License
+
+---
+
+## 🌍 Acknowledgements
+
+- [TravellerMap API](https://travellermap.com/api)
+- Mongoose Publishing — _Traveller 2e_
+- SmiteWorks — _Fantasy Grounds_
