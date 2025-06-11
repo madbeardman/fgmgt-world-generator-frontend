@@ -10,7 +10,6 @@ A web-based tool to fetch data from [TravellerMap](https://travellermap.com/), f
 - Supports multiple output formats:
   - **Module** (`.mod` ZIP file for Fantasy Grounds)
   - **System** (plain `.txt` file)
-  - **Refmanual** (Fantasy Grounds Reference Manual XML)
 - CLI-style progress messages in the browser
 - Clean, modern frontend powered by Astro + Vite
 
@@ -60,7 +59,6 @@ The app will be available at [http://localhost:4321](http://localhost:4321)
 3. Choose your desired output format:
    - `module` for `.mod` file
    - `system` for plain `.txt` export
-   - `refmanual` for Fantasy Grounds Reference Manual XML
 4. Click **Generate**.
 5. The tool will:
    - Fetch all 16 subsectors
@@ -111,7 +109,7 @@ pnpm add archiver
 
 ## 📜 License
 
-MIT License
+MIT License © Colin 'MadBeardMan' Richardson
 
 ---
 

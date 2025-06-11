@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 
 const sectors = ["Spinward Marches", "Deneb", "Solomani", "Vland", "Foreven"];
-const formats = ["module", "system", "refmanual"];
+const formats = ["module", "system"];
 
 export default function SectorForm() {
   const [sector, setSector] = useState(sectors[0]);
