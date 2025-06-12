@@ -1,4 +1,4 @@
-![Traveller Logo](./traveller_logo.png)
+![Traveller Logo](./traveller_logo_black_bg.jpg)
 
 ---
 
