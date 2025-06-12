@@ -77,6 +77,8 @@ export default function SectorForm() {
       eventSourceRef.current.close();
     }
 
+    console.log("Creating EventSource");
+
     const es = new EventSource(
       `${
         window.location.origin
@@ -100,15 +102,18 @@ export default function SectorForm() {
       }
     };
 
-    es.onerror = () => {
-      setStatus("error");
-      setMessages((prev) => [...prev, "❌ Connection error."]);
+    es.onerror = (e) => {
+      if (status !== "done") {
+        setStatus("error");
+        console.error("EventSource error:", e);
+        setMessages((prev) => [...prev, "❌ Connection error."]);
+      }
       es.close();
     };
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto space-y-4">
       <div>
         <label className="block text-sm font-medium mb-1">Sector</label>
         <div className="flex items-center gap-2">
@@ -153,11 +158,15 @@ export default function SectorForm() {
         {status === "loading" ? "Generating..." : "Generate"}
       </button>
 
-      <div className="mt-4 space-y-1 text-sm font-mono">
-        {messages.map((msg, i) => (
-          <div key={i}>{msg}</div>
-        ))}
-      </div>
+      {messages.length > 0 && (
+        <div className="mt-4 text-sm font-mono overflow-y-auto w-full sm:max-w-3xl px-4 py-2 bg-gray-900/60 border border-gray-700 rounded">
+          {messages.map((msg, i) => (
+            <div key={i} className="whitespace-pre-wrap break-words">
+              {msg}
+            </div>
+          ))}
+        </div>
+      )}
 
       {status === "done" && (
         <p className="text-green-400 mt-2">

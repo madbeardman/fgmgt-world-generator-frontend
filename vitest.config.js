@@ -9,5 +9,9 @@ export default defineConfig({
     coverage: {
       reporter: ['text', 'html'],
     },
+  }, server: {
+    watch: {
+      ignored: ['**/output/**'],
+    },
   },
 });

@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import vercel from "@astrojs/vercel";
 
 import tailwindcss from '@tailwindcss/vite';
 
@@ -11,5 +12,8 @@ export default defineConfig({
     plugins: [tailwindcss()]
   },
 
-  integrations: [react()]
+  integrations: [react()],
+
+  output: "server", // Required for SSR features like /api/generate-stream
+  adapter: vercel({}),
 });

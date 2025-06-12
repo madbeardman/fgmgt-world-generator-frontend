@@ -8,16 +8,24 @@ import SectorForm from '../components/SectorForm.jsx';
     <meta charset="UTF-8" />
     <title>Traveller Sector World Generator for Fantasy Grounds</title>
   </head>
-  <body class="bg-gray-950 text-gray-100 font-sans min-h-screen p-6">
-    <main class="max-w-3xl mx-auto">
-      <!-- 🌌 Traveller Logo -->
-      <img
-        src="/traveller_logo.png"
-        alt="Traveller Logo"
-        class="mx-auto mb-4"
-      />
-      <h1 class="text-3xl font-bold mb-4">Traveller Sector World Generator for Fantasy Grounds</h1>
-      <SectorForm client:load />
-    </main>
+  <body class="bg-gray-950 text-gray-100 font-sans">
+    <div class="min-h-screen flex flex-col">
+      <main class="flex-grow max-w-4xl mx-auto p-6">
+        <!-- 🌌 Traveller Logo -->
+        <img
+          src="/traveller_logo.png"
+          alt="Traveller Logo"
+          class="w-156 mx-auto mb-4"
+        />
+        <h1 class="text-3xl font-bold mb-4 text-center">
+  Traveller Sector World Generator for Fantasy Grounds
+</h1>
+        <SectorForm client:load />
+      </main>
+
+      <footer class="border-t border-gray-800 text-xs text-gray-400 text-center py-4">
+        Traveller and the Traveller logo are trademarks of Mongoose Publishing. This tool is fan-made and not affiliated with or endorsed by Mongoose Publishing.
+      </footer>
+    </div>
   </body>
 </html>

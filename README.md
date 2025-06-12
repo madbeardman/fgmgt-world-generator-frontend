@@ -21,6 +21,10 @@ A web-based tool to fetch data from [TravellerMap](https://travellermap.com/), f
 
 ---
 
+![Example Output](./example-output.jpg)
+
+---
+
 ## 📦 Installation
 
 ### Prerequisites
@@ -130,3 +134,10 @@ MIT License © Colin 'MadBeardMan' Richardson
 - [TravellerMap API](https://travellermap.com/api)
 - [Mongoose Publishing — _Traveller 2e_](https://www.mongoosepublishing.com/collections/traveller-rpgs))
 - [SmiteWorks — _Fantasy Grounds_](https://www.fantasygrounds.com/store/?sys=30&sort=1#TopSellers)
+
+---
+
+## 📘 Trademark Notice
+
+Traveller and the Traveller logo are trademarks of Mongoose Publishing.
+This project is a fan-made tool and is not affiliated with or endorsed by Mongoose Publishing.

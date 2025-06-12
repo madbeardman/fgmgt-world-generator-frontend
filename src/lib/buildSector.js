@@ -40,16 +40,23 @@ export async function buildSector(sectorName, format, onMessage = () => { }) {
     const allLines = [];
 
     for (const subsector of metadata.subsectors) {
-        onMessage(`📦 Fetching subsector: ${subsector.name} (${subsector.index})`);
+        try {
+            onMessage(`📦 Fetching subsector: ${subsector.name} (${subsector.index})`);
 
-        const raw = await fetchSubsector(cleanName, subsector.index);
-        const lines = raw.split('\\r\\n').filter(line => line.trim().length > 0);
-        const parsed = lines
-            .map(line => readLine(cleanName, subsector.name, line, subsector.index))
-            .filter(Boolean);
+            const raw = await fetchSubsector(cleanName, subsector.index);
+            const lines = raw.split('\\r\\n').filter(line => line.trim().length > 0);
+            const parsed = lines
+                .map(line => readLine(cleanName, subsector.name, line, subsector.index))
+                .filter(Boolean);
 
-        onMessage(`📄 ${parsed.length} systems in ${subsector.name}`);
-        allLines.push(...parsed);
+            onMessage(`📄 ${parsed.length} systems in ${subsector.name}`);
+            allLines.push(...parsed);
+        } catch (err) {
+            onMessage(`[ERROR] Failed to fetch ${subsector.name} (${subsector.index}): ${err.message}`);
+            // Optionally continue or abort:
+            // return null; // if you want to bail early
+            // continue; // keep going with other subsectors
+        }
     }
 
     onMessage(`🧰 Formatting ${allLines.length} total systems`);
@@ -71,19 +78,21 @@ export async function buildSector(sectorName, format, onMessage = () => { }) {
     }
 
 
-    switch (formatLower) {
-        case 'system':
+    try {
+        if (formatLower === 'system') {
             await systemFormatter(allLines, outputFilePath, onMessage);
-            break;
-        case 'module':
-        default:
+            onMessage(`✅ Build complete: ${cleanName} (${formatLower})`);
+            return outputFilePath;
+        } else {
             await xmlFormatter(allLines, outputDir, cleanName, onMessage);
             await createXMLDefinitionFile(outputDir, cleanName, onMessage);
             const zipPath = path.join(outputDir, zipName);
             await createZipArchive(outputDir, zipPath, onMessage);
-            return zipPath; // return the .mod path
+            onMessage(`✅ Build complete: ${cleanName} (${formatLower})`);
+            return zipPath;
+        }
+    } catch (err) {
+        onMessage(`[ERROR] Formatter failed: ${err.message}`);
+        throw err;
     }
-
-    onMessage(`✅ Build complete: ${cleanName} (${formatLower})`);
-    return outputFilePath;
 }
